@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecomm-order-service
+  namespace: default
+  labels:
+    app: ecomm-sample-app-testrca
+    service: ecomm-order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecomm-sample-app-testrca
+      service: ecomm-order-service
+  template:
+    metadata:
+      labels:
+        app: ecomm-sample-app-testrca
+        service: ecomm-order-service
+    spec:
+        - name: ecomm-order-service-containers
+          image: public.ecr.aws/cloudaeye/ecomm-order-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              value: ""
+            - name: USER_SERVICE_URL
+              value: ""
+            - name: PRODUCT_SERVICE_URL
+              value: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecomm-order-service-svc
+  namespace: default
+  labels:
+    app: ${APP_NAME}
+    service: ecomm-order-service
+    appEnv: ${SERVER_ENV}
+spec:
+  selector:
+    app: ecomm-sample-app-testrca
+    service: ecomm-order-service
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+---
+# Nginx Ingress Ctrl Resources for this ingress : https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ecomm-order-service
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /sample-app/ecomm(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: ecomm-order-service-svc
+                port:
+                  number: 80
