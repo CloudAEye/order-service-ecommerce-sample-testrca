@@ -44,7 +44,7 @@ Run the below command from the root path of the dir
 
 ```bash
 export FLASK_APP='src/app.py'
-export DATABASE_URL="mysql+pymysql://productname:password@hostname:3306/defaultdb"
+export DATABASE_URL="mysql+pymysql://username:password@hostname:3306/defaultdb"
 export PRODUCT_SERVICE_URL='http://localhost:5101'
 flask run --port=5000
 ```
@@ -59,8 +59,9 @@ Run the below command from root path of the dir
 ```bash
 export DATABASE_URL="mysql+pymysql://username:password@hostname:3306/defaultdb"
 export PRODUCT_SERVICE_URL='http://localhost:5101'
-docker build -t ecomm-product-service .
-docker run -e DATABASE_URL=$DATABASE_URL -e PRODUCT_SERVICE_URL=$PRODUCT_SERVICE_URL -p 5000:5000 ecomm-product-service
+export USER_SERVICE_URL='http://localhost:5100'
+docker build -t ecomm-order-service .
+docker run -e DATABASE_URL=$DATABASE_URL -e PRODUCT_SERVICE_URL=$PRODUCT_SERVICE_URL -p 5000:5000 ecomm-order-service
 ```
 
 > The application should be up and running on http://127.0.0.1:5000
