@@ -37,9 +37,8 @@ metadata:
   name: ecomm-order-service-svc
   namespace: default
   labels:
-    app: ${APP_NAME}
+    app: ecomm-sample-app-testrca
     service: ecomm-order-service
-    appEnv: ${SERVER_ENV}
 spec:
   selector:
     app: ecomm-sample-app-testrca
