@@ -1,4 +1,4 @@
-# Demo E-commerce App - Orders Service
+# Demo E-commerce App - Order Service
 
 This project demonstrates a simple e-commerce system built using a microservices architecture. It consists of one of the service used by this demo app:
 
