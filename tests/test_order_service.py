@@ -2,7 +2,7 @@ import unittest
 
 from src.app import app
 from src.config import SQLALCHEMY_DATABASE_URI
-from src.models import Order
+from src.models import Order, db
 from src.service import OrderService
 
 
@@ -26,15 +26,20 @@ class TestOrderService(unittest.TestCase):
         app.config['TEST_MODE'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
         cls.app = app.test_client()
-        # with app.app_context():
-        #     print("Delete all orders")
-        #     cls.service.delete_all_orders()
+        with app.app_context():
+            db.create_all()
+        with app.app_context():
+            print("Delete all orders")
+            cls.service.delete_all_orders()
 
     @classmethod
     def tearDownClass(cls):
         print("tearing down")
         with app.app_context():
-            cls.service.delete_all_orders()
+            for uid in cls.user_orders.keys():
+                cls.service.delete_by_user(user_id=uid)
+        cls.orders.clear()
+        cls.user_orders.clear()
 
     def test_01_place_orders(self):
         with app.app_context():

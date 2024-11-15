@@ -20,6 +20,22 @@ class OrderService:
                 order
                 in orders]
 
+    def delete_by_user(self, user_id):
+        """
+        Registers a new user with the given payload
+        :param data: Data of the new user
+        :return: Success message
+        """
+        orders = Order.query.filter_by(user_id=user_id).all()
+        for order in orders:
+            db.session.delete(order)
+            db.session.commit()
+        return True
+
+
     def delete_all_orders(self):
-        result = Order.query.delete()
-        return result
+        orders = Order.query.all()
+        for order in orders:
+            db.session.delete(order)
+            db.session.commit()
+        return True

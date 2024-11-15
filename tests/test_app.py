@@ -6,6 +6,7 @@ import requests
 
 from src.app import app
 from src.config import SQLALCHEMY_DATABASE_URI
+from src.models import db
 from src.service import OrderService
 
 
@@ -28,6 +29,8 @@ class TestApp(unittest.TestCase):
         app.config['TEST_MODE'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
         cls.app = app.test_client()
+        with app.app_context():
+            db.create_all()
         user_service_url = os.getenv('USER_SERVICE_URL', '')
         requests.post(f'{user_service_url}/register', json={'username': cls.username, 'password': cls.password})
         login_response = requests.post(f'{user_service_url}/login',
