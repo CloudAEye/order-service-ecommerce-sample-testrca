@@ -39,13 +39,13 @@ def create_order():
         # Check if the product exists and has enough stock
         if product_response.status_code != 200:
             return jsonify(product_response.json()), product_response.status_code
-        product = product_response.json()
-
         # Check if stock available => if not throw error about insufficient stock
+        product = product_response.json()
         if product['quantity'] < quantity:
             return jsonify({'message': 'Insufficient stock'}), 400
-        new_order = OrderService().create_order(user_id=user_id, product_id=product_id, quantity=quantity)
 
+        # Create new order
+        new_order = OrderService().create_order(user_id=user_id, product_id=product_id, quantity=quantity)
         # Update the product stock on product service
         updated_stock = product['quantity'] - quantity
         product_update_response = requests.put(f'{PRODUCT_SERVICE_URL}/products/{product_id}', json={'quantity': updated_stock}, headers=headers)
@@ -63,6 +63,7 @@ def create_order():
 def get_orders():
     try:
         user_id = get_jwt_identity()
+        # List all orders placed by the user
         result = OrderService().get_all_orders(user_id=user_id)
         return jsonify(result), 200
     except Exception as e:
