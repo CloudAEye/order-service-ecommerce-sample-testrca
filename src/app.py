@@ -41,7 +41,7 @@ def create_order():
             return jsonify(product_response.json()), product_response.status_code
         product = product_response.json()
 
-        # Check if stock available
+        # Check if stock available => if not throw error about insufficient stock
         if product['quantity'] < quantity:
             return jsonify({'message': 'Insufficient stock'}), 400
         new_order = OrderService().create_order(user_id=user_id, product_id=product_id, quantity=quantity)
