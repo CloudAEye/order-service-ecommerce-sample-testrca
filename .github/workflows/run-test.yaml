@@ -28,7 +28,10 @@ jobs:
       - name: Run tests
         env:
           FLASK_APP: 'src/app'
+          TEST_MODE: 'TRUE'
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          USER_SERVICE_URL: ${{ secrets.USER_SERVICE_URL }}
+          PRODUCT_SERVICE_URL: ${{ secrets.PRODUCT_SERVICE_URL }}
         run: |
           python -m unittest discover tests
 
