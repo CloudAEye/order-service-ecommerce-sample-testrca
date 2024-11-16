@@ -52,6 +52,7 @@ def create_order():
         if product_update_response.status_code != 200:
             return jsonify({'message': 'Failed to update product quantity'}), product_update_response.status_code
 
+        # Return response
         return jsonify({'id': new_order.id, 'status': new_order.status}), 201
     except Exception as e:
         return jsonify({'message': e}), 400
