@@ -40,12 +40,13 @@ def create_order():
         if product_response.status_code != 200:
             return jsonify(product_response.json()), product_response.status_code
         product = product_response.json()
+
+        # Check if stock available
         if product['quantity'] < quantity:
             return jsonify({'message': 'Insufficient stock'}), 400
-
         new_order = OrderService().create_order(user_id=user_id, product_id=product_id, quantity=quantity)
 
-        # Update the product stock
+        # Update the product stock on product service
         updated_stock = product['quantity'] - quantity
         product_update_response = requests.put(f'{PRODUCT_SERVICE_URL}/products/{product_id}', json={'quantity': updated_stock}, headers=headers)
         if product_update_response.status_code != 200:
