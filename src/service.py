@@ -14,19 +14,20 @@ class OrderService:
             raise e
         return new_order
 
-    def get_all_orders(self, user_id: int):
+    def get_all_orders(self, user_id: int) -> [dict]:
         orders: list[Order] = Order.query.filter_by(user_id=user_id).all()
+        print(f"Total order for the user - {user_id} : {len(orders)}")
         return [{'id': order.id, 'user_id': user_id, 'product_id': order.product_id, 'quantity': order.quantity, 'status': order.status} for
                 order
                 in orders]
 
     def delete_by_user(self, user_id):
         """
-        Registers a new user with the given payload
-        :param data: Data of the new user
+        Deletes all orders created by the given user
+        :param user_id: Id of the user
         :return: Success message
         """
-        orders = Order.query.filter_by(user_id=user_id).all()
+        orders: [Order] = Order.query.filter_by(user_id=user_id).all()
         for order in orders:
             db.session.delete(order)
             db.session.commit()
@@ -34,7 +35,11 @@ class OrderService:
 
 
     def delete_all_orders(self):
-        orders = Order.query.all()
+        """
+        Deletes all orders in the db
+        :return:
+        """
+        orders: [Order] = Order.query.all()
         for order in orders:
             db.session.delete(order)
             db.session.commit()
