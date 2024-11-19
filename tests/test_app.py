@@ -35,7 +35,7 @@ class TestApp(unittest.TestCase):
         requests.post(f'{user_service_url}/register', json={'username': cls.username, 'password': cls.password})
         login_response = requests.post(f'{user_service_url}/login',
                                        json={'username': cls.username, 'password': cls.password})
-        print(f"Login response code : {login_response.status_code}")
+        print(f"Login responses code : {login_response.status_code}")
         cls.access_token = login_response.json().get("access_token", "")
         with app.app_context():
             print("Clear orphan orders from prev runs (if any)")
